@@ -3,6 +3,8 @@ const app = express(); // This creates a new Express server
 const db = require("./config/keys").mongoURI;
 console.log(db)
 const mongoose = require("mongoose");
+const users = require("./routes/api/users");
+const tweets = require("./routes/api/tweets");
 
 app.get("/", (req, res) => res.send("Hello Young World"));
 // setups a route so that we can render some information on our page
@@ -18,3 +20,7 @@ app.listen(port, () => console.log(`Server is running on port ${port}`));
 // tells Express to start a socket and listen for connections on the path and
 // will log a success message to the console when our server is running 
 // successfully
+
+app.use("/api/users", users);
+app.use("/api/tweets", tweets);
+// Tells Express to use the imported users and tweets route
