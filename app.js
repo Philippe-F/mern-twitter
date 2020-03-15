@@ -1,10 +1,12 @@
 const express = require("express");
 const app = express(); // This creates a new Express server
 const db = require("./config/keys").mongoURI;
-console.log(db)
 const mongoose = require("mongoose");
+
 const users = require("./routes/api/users");
 const tweets = require("./routes/api/tweets");
+
+const bodyParser = require('body-parser'); //parses the JSON we send to the frontend 
 
 app.get("/", (req, res) => res.send("Hello Young World"));
 // setups a route so that we can render some information on our page
@@ -24,3 +26,7 @@ app.listen(port, () => console.log(`Server is running on port ${port}`));
 app.use("/api/users", users);
 app.use("/api/tweets", tweets);
 // Tells Express to use the imported users and tweets route
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+//middleware for the body parser 
