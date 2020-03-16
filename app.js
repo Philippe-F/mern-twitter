@@ -9,6 +9,9 @@ const tweets = require("./routes/api/tweets");
 
 const bodyParser = require('body-parser'); // parses the JSON we send to the frontend 
 
+app.use(bodyParser.urlencoded({ extended: false })); 
+// makes sure that the body parser is used on the frontend
+
 app.get("/", (req, res) => res.send("Hello Young World"));
 // Puts a new route onto the app object to listen for incoming (GET, PATCH, etc) requests
 // "/" is the route (root). req is a request from the server (postId, etc)
@@ -21,7 +24,6 @@ mongoose // connect mongoose to the db
   // .connect returns a promise. dispatch a message if connected 
   .catch(err => console.log(err));
   // dispatch a message if error
-
 
 const port = process.env.PORT || 5000; // tells our app which port to run on
 app.listen(port, () => console.log(`Server is running on port ${port}`));
