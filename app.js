@@ -8,11 +8,26 @@ const users = require("./routes/api/users");
 const tweets = require("./routes/api/tweets");
 
 const bodyParser = require('body-parser'); // parses the JSON we send to the frontend 
+const User = require('./models/User');
+// import User model 
 
 app.use(bodyParser.urlencoded({ extended: false })); 
-// makes sure that the body parser is used on the frontend
+// makes sure app responds to postman
 
-app.get("/", (req, res) => res.send("Hello Young World"));
+app.use(bodyParser.json());
+// makes sure app responds to JSON requests 
+
+app.get("/", (req, res) => {
+  const user = new User({
+    // create a new user object in out home route 
+    handle: "philippe",
+    email: "philippe@123.com,",
+    password: "1234567"
+  })
+  user.save()
+  // save user to db 
+  res.send("Hello Young World")
+});
 // Puts a new route onto the app object to listen for incoming (GET, PATCH, etc) requests
 // "/" is the route (root). req is a request from the server (postId, etc)
 // res is sent to the frontend
