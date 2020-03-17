@@ -12,6 +12,10 @@ const bcrypt = require("bcryptjs");
 // import BCrypt 
 const User = require("../../models/User");
 // import User model
+const keys = require ("../../config/keys"); 
+// secret key coming from config 
+const jwt = require("jsonwebtoken");
+// importing jwt module from jsonwebtoken dependency 
 
 
 router.get("/test", (req, res) => res.json({ msg: "This is the users route" }));
@@ -54,7 +58,7 @@ router.post("/register", (req, res) => {
           .then((user) => res.json(user))
           // send user to the frontend 
           .catch(err => console.log(err)) 
-          // send errors to the frontend 
+          // send errors to the frontend  
         })
       });
       // (.genSalt) first argument is number of rounds to generate the salt 
@@ -86,19 +90,42 @@ router.post("/login", (req, res) => {
 
   const email = req.body.email;
   const password = req.body.password;
+  // grab the email and password from the request body 
 
   User.findOne({ email }).then(user => {
+    // looks up the user by email 
     if (!user) {
-      // Use the validations to send the error
       errors.email = "User not found";
       return res.status(404).json(errors);
+      // if there is not a user then use the validations to send the error
+      // to the frontend 
     }
 
     bcrypt.compare(password, user.password).then(isMatch => {
+      // pass the raw password into bcrypt and compare it against the 
+      // hashed password in the db and returns a boolean value 
       if (isMatch) {
-        res.json({ msg: "Success" });
+        const payLoad = {
+          // create the payload we are going to send back from the db
+          id: user.id,
+          handle: user.handle,
+          email: user.email
+        }
+        jwt.sign(
+          // creating the jsonwebtoken 
+          payLoad,
+          keys.secretOrKey,
+          { expiresIn: 3600 },
+          //we want the jwt to expire 
+          (err, token) => {
+          // response sent to the frontend once we have created the jwt 
+            res.json({
+              success: true,
+              token = "Bearer" + token 
+            })
+          }
+        )
       } else {
-        // And here:
         errors.password = "Incorrect password";
         return res.status(400).json(errors);
       }
