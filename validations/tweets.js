@@ -10,7 +10,9 @@ module.exports = function validateTweetInput(data) {
   // check to see if text exists 
 
   if (!Validator.isLength(data.text, { min: 5, max: 140 })) {
-
+  // checking if the tweet is NOT the correct amount of characters 
+  // first argument: is te data we want to validate
+  // second argument: an options hash with min / max number of characters
   errors.text = "Tweet must be between 5 - 140 characters";
   }
 
